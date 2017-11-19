@@ -9,6 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,8 +24,7 @@ public class DatabaseTest extends SQLiteDatabase{
     }
 
     private void cleardb() {
-        query(TableRecord.class).delete();
-        query(TableRecord2.class).delete();
+        for (Class<?> c : getTables()) query(c).delete();
     }
 
     @Override
@@ -42,7 +42,9 @@ public class DatabaseTest extends SQLiteDatabase{
     protected Class<?>[] getTables() {
         return new Class[] {
                 TableRecord.class,
-                TableRecord2.class
+                TableRecord2.class,
+                TableRecord3.class,
+                TableRecord4.class
         };
     }
 
@@ -124,6 +126,25 @@ public class DatabaseTest extends SQLiteDatabase{
             for (Test6Result rr : list) {
                 assertEq(rr.item, map.get(rr.id).i);
                 assertEq(rr.checksum, checksum);
+            }
+        }
+    }
+
+    @Test
+    public void db_test7() {
+        cleardb();
+        for (long i=0;i<100;i++) {
+            queryBundled("db_test7_insert.sql", Collections.singletonMap("table_name", "test_table3"), i, i*2, i*3);
+            queryBundled("db_test7_insert.sql", Collections.singletonMap("table_name", "test_table4"), i, i*4, i*5);
+        }
+        queryBundled("db_test7_update.sql", null);
+        List<TableRecord3> list = query(TableRecord3.class).select();
+        for (TableRecord3 rr : list) {
+            assertEq(rr.data2, rr.key*3);
+            if (rr.key % 4 == 0) {
+                assertEq(rr.data1, rr.key*3/4);
+            } else {
+                assertEq(rr.data1, rr.key*2);
             }
         }
     }

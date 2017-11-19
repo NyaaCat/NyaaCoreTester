@@ -1,0 +1,2 @@
+include ":NyaaCore"
+project(":NyaaCore").projectDir = file("../NyaaCore")

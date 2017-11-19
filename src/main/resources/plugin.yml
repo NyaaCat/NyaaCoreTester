@@ -1,0 +1,7 @@
+name: NyaaCoreTester
+main: cat.nyaa.nyaacoretester.NyaaCoreTester
+description: "NyaaCoreTester"
+version: 0.1-dev
+depend: [NyaaCore]
+authors: [RecursiveG]
+website: "https://github.com/NyaaCat/NyaaCoreTester"
